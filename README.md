@@ -34,6 +34,20 @@ npm run preview    # serve the built site locally
 `dist/` contains only static files, so it can be hosted anywhere (GitHub Pages, GitLab Pages,
 Netlify...). The build uses relative paths, so it also works from a sub-folder.
 
+## Docker
+
+The [`Dockerfile`](Dockerfile) runs the tests, builds the game, and serves it with Caddy on
+port 8080 as an unprivileged user. HTTPS is left to a reverse proxy in front of it.
+
+```sh
+docker build -t four-in-a-row .
+docker run --rm -p 8080:8080 four-in-a-row   # then open http://localhost:8080
+```
+
+Each push to `master` publishes the image as `ghcr.io/mkauto/four-in-a-row:latest`
+([GitHub Actions workflow](.github/workflows/image.yml)). A version tag such as `1.2.0` also
+publishes `:1.2.0`. If a test fails, no image is published.
+
 ## How the AI works
 
 The AI ([`src/ai/minimax.ts`](src/ai/minimax.ts)) looks ahead with **minimax**: it tries
